@@ -79,9 +79,19 @@
         @"keyboards": @"General&path=Keyboard/KEYBOARDS",
         @"mobile_data": @"MOBILE_DATA_SETTINGS_ID"
     };
-
-    if ([key isEqualToString:@"application_details"]) {
-        [self openURL:UIApplicationOpenSettingsURLString withCallback:command];
+    
+    if ([key isEqualToString:@"notification_id"] || [key isEqualToString:@"notifications"]) {
+        NSLog(@"[NativeSettings] Attempting to open notification settings for key: %@", key);
+        
+        if (@available(iOS 15.4, *)) {
+            NSLog(@"[NativeSettings] Using iOS 15.4+ UIApplicationOpenNotificationSettingsURLString");
+            NSLog(@"[NativeSettings] URL: %@", UIApplicationOpenNotificationSettingsURLString);
+            [self openURL:UIApplicationOpenNotificationSettingsURLString withCallback:command];
+        } else {
+            NSLog(@"[NativeSettings] Using fallback UIApplicationOpenSettingsURLString for iOS < 15.4");
+            NSLog(@"[NativeSettings] URL: %@", UIApplicationOpenSettingsURLString);
+            [self openURL:UIApplicationOpenSettingsURLString withCallback:command];
+        }
         return;
     }
 
